@@ -36,6 +36,18 @@ class Database {
     });
   }
 
+  checkTableExists() {
+    const query = `select 1 from patient LIMIT 1`;
+
+    this.db.query(query, (err) => {
+      if (err) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+  }
+
   query(sql, params, callback) {
     this.db.query(sql, params, callback);
   }
