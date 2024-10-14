@@ -67,3 +67,6 @@ class API {
         }).listen(port);
     }
 }
+
+const api = new API();
+api.listen(8080);

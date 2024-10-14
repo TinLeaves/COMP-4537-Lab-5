@@ -1,16 +1,16 @@
-const mysql = require('mysql');
+const mysql = require("mysql2/promise");
 require('dotenv').config();
 
 class Database {
   constructor() {
-    this.db = mysql.createConnection({
+    this.db = mysql.createPool({
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
     });
 
-    this.connect();
+    //this.connect();
     this.createTable();
   }
 
@@ -30,7 +30,7 @@ class Database {
       ) ENGINE=InnoDB;
     `;
 
-    this.db.query(createTableQuery, (err) => {
+    this.db.execute(createTableQuery).then((err) => {
       if (err) throw err;
       console.log('Patient table is ready');
     });
@@ -39,7 +39,7 @@ class Database {
   checkTableExists() {
     const query = `select 1 from patient LIMIT 1`;
 
-    this.db.query(query, (err) => {
+    this.db.execute(query).then((err) => {
       if (err) {
         return false;
       } else {
@@ -59,7 +59,7 @@ class Database {
     const query = `INSERT INTO patient (name, dateOfBirth) VALUES (?, ?)`;
 
     rows.forEach((row) => {
-      this.db.query(query, row).then((err) => {
+      this.db.execute(query, row).then((err) => {
         if (err) {
             res.writeHead(500);
             res.end('Error inserting rows.');
@@ -69,10 +69,6 @@ class Database {
         }
       });
     });
-  }
-
-  query(sql, params, callback) {
-    this.db.query(sql, params, callback);
   }
 }
 
