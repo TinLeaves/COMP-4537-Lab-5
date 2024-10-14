@@ -48,6 +48,29 @@ class Database {
     });
   }
 
+  insertTestRows(res) {
+    const rows = [
+      ["Sara Brown", "1990-01-01"],
+      ["John Smith", "1941-01-01"],
+      ["Jack Ma", "1961-01-30"],
+      ["Elon Musk", "1999-01-01"],
+    ];
+
+    const query = `INSERT INTO patient (name, dateOfBirth) VALUES (?, ?)`;
+
+    rows.forEach((row) => {
+      this.db.query(query, row).then((err) => {
+        if (err) {
+            res.writeHead(500);
+            res.end('Error inserting rows.');
+        } else {
+            res.writeHead(200);
+            res.end('Rows inserted successfully.');
+        }
+      });
+    });
+  }
+
   query(sql, params, callback) {
     this.db.query(sql, params, callback);
   }
