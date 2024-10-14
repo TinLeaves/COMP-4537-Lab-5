@@ -1,3 +1,5 @@
+// Created in part with GitHub Copilot
+
 const insertButton = document.getElementById('insertButton');
 const queryInput = document.getElementById('queryInput');
 const executeQueryButton = document.getElementById('executeQueryButton');

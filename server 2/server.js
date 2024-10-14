@@ -1,3 +1,5 @@
+// Created in part with GitHub Copilot
+
 const http = require('http');
 const database = require('./db');
 
