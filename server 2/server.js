@@ -42,14 +42,12 @@ class API {
                     try {
                         const query = JSON.parse(body).query;
                         if (/^(INSERT)/i.test(query)) {
-                            database.query(query, (err, results) => {
-                                if (err) {
-                                    res.writeHead(500, { "Content-Type": "application/json" });
-                                    res.end(JSON.stringify({ error: err.message }));
-                                } else {
-                                    res.writeHead(200, { "Content-Type": "application/json" });
-                                    res.end(JSON.stringify(results));
-                                }
+                            database.db.execute(query).then((results) => {
+                                res.writeHead(200, { "Content-Type": "application/json" });
+                                res.end(JSON.stringify(results));
+                            }).catch((err) => {
+                                res.writeHead(500, { "Content-Type": "application/json" });
+                                res.end(JSON.stringify({ error: err.message }));
                             });
                         } else {
                             res.writeHead(400, { "Content-Type": "application/json" });
@@ -65,14 +63,12 @@ class API {
                     console.log("Handling GET request for /sql");
                     const query = JSON.parse(body).query;
                     if (/^(SELECT)/i.test(query)) {
-                        database.query(query, (err, results) => {
-                            if (err) {
-                                res.writeHead(500, { "Content-Type": "application/json" });
-                                res.end(JSON.stringify({ error: err.message }));
-                            } else {
-                                res.writeHead(200, { "Content-Type": "application/json" });
-                                res.end(JSON.stringify(results));
-                            }
+                        database.db.execute(query).then((results) => {
+                            res.writeHead(200, { "Content-Type": "application/json" });
+                            res.end(JSON.stringify(results));
+                        }).catch((err) => {
+                            res.writeHead(500, { "Content-Type": "application/json" });
+                            res.end(JSON.stringify({ error: err.message }));
                         });
                     } else {
                         res.writeHead(400, { "Content-Type": "application/json" });
