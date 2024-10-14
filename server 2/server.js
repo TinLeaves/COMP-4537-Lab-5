@@ -62,7 +62,7 @@ class API {
                 let query = req.url.split("/")[2];
                 query = decodeURI(query);
 
-                if (req.url === "/sql") {
+                if (req.url.split("/")[1] === "/sql") {
                     console.log("Handling GET request for /sql");
                     try {
                         if (/^(SELECT)/i.test(query)) {
