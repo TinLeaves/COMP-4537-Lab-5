@@ -62,6 +62,9 @@ class API {
                 let url = new URL(req.url, `http://${req.headers.host}`);
                 let query = url.searchParams.get("query");
 
+                console.log(`Pathname: ${url.pathname}`);
+                console.log(`Received query: ${query}`);
+
                 if (url.pathname === "/sql") {
                     console.log("Handling GET request for /sql");
                     try {
