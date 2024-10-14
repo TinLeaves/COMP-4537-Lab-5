@@ -1,4 +1,4 @@
-// Created in part with GitHub Copilot
+// Created in part with GitHub Copilot and ChatGPT
 
 const http = require('http');
 const database = require('./db');
