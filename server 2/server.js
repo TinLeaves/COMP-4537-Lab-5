@@ -32,28 +32,37 @@ class API {
         });
 
         req.on("end", () => {
+            console.log(`Received ${req.method} request for ${req.url}`);
+            
             if (req.method === "POST") {
                 if (req.url === "/insertTestRows") {
+                    console.log("Inserting test rows...");
                     database.insertTestRows(res);
                 } else if (req.url === "/sql") {
-                    const query = JSON.parse(body).query;
-                    if (/^(INSERT)/i.test(query)) {
-                        database.query(query, (err, results) => {
-                            if (err) {
-                                res.writeHead(500, { "Content-Type": "application/json" });
-                                res.end(JSON.stringify({ error: err.message }));
-                            } else {
-                                res.writeHead(200, { "Content-Type": "application/json" });
-                                res.end(JSON.stringify(results));
-                            }
-                        });
-                    } else {
+                    try {
+                        const query = JSON.parse(body).query;
+                        if (/^(INSERT)/i.test(query)) {
+                            database.query(query, (err, results) => {
+                                if (err) {
+                                    res.writeHead(500, { "Content-Type": "application/json" });
+                                    res.end(JSON.stringify({ error: err.message }));
+                                } else {
+                                    res.writeHead(200, { "Content-Type": "application/json" });
+                                    res.end(JSON.stringify(results));
+                                }
+                            });
+                        } else {
+                            res.writeHead(400, { "Content-Type": "application/json" });
+                            res.end(JSON.stringify({ error: "Only INSERT queries are allowed in POST requests." }));
+                        }
+                    } catch (error) {
                         res.writeHead(400, { "Content-Type": "application/json" });
-                        res.end(JSON.stringify({ error: "Only INSERT queries are allowed in POST requests." }));
+                        res.end(JSON.stringify({ error: "Invalid JSON format." }));
                     }
                 }
             } else if (req.method === "GET") {
                 if (req.url === "/sql") {
+                    console.log("Handling GET request for /sql");
                     const query = JSON.parse(body).query;
                     if (/^(SELECT)/i.test(query)) {
                         database.query(query, (err, results) => {
@@ -69,10 +78,13 @@ class API {
                         res.writeHead(400, { "Content-Type": "application/json" });
                         res.end(JSON.stringify({ error: "Only SELECT queries are allowed in GET requests." }));
                     }
+                } else {
+                    res.writeHead(404, { "Content-Type": "application/json" });
+                    res.end(JSON.stringify({ error: "Not Found" }));
                 }
             } else {
-                res.writeHead(404, { "Content-Type": "application/json" });
-                res.end(JSON.stringify({ error: "Not Found" }));
+                res.writeHead(405, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ error: "Method Not Allowed" }));
             }
         });
     }
