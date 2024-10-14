@@ -25,16 +25,16 @@ class API {
             return;
         }
 
-        //From https://stackoverflow.com/questions/31006711/get-request-body-from-node-jss-http-incomingmessage
-        let body = "";
-        req.on("data", (chunk) => {
-            body += chunk.toString();
-        });
-
         req.on("end", () => {
             console.log(`Received ${req.method} request for ${req.url}`);
             
             if (req.method === "POST") {
+                //From https://stackoverflow.com/questions/31006711/get-request-body-from-node-jss-http-incomingmessage
+                let body = "";
+                req.on("data", (chunk) => {
+                    body += chunk.toString();
+                });
+
                 if (req.url === "/insertTestRows") {
                     console.log("Inserting test rows...");
                     database.insertTestRows(res);
@@ -59,10 +59,12 @@ class API {
                     }
                 }
             } else if (req.method === "GET") {
+                let query = req.url.split("/")[2];
+                query = decodeURI(query);
+
                 if (req.url === "/sql") {
                     console.log("Handling GET request for /sql");
                     try {
-                        const query = JSON.parse(body).query;
                         if (/^(SELECT)/i.test(query)) {
                             database.db.execute(query).then((results) => {
                                 res.writeHead(200, { "Content-Type": "application/json" });

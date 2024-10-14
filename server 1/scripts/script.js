@@ -30,25 +30,39 @@ class UserInterface {
         this.executeQueryButton.addEventListener('click', () => {
             const query = this.queryInput.value;
 
-            let method = 'POST';
             if (/^(SELECT)/i.test(query)) {
-                method = 'GET';
-            }
-
-            fetch(`${apiRoute}/sql`, {
-                method: method,
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ query : query })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    this.responseOutput.textContent = JSON.stringify(data, null, 2);
+                fetch(`${apiRoute}/sql/${encodeURI(query)}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
                 })
-                .catch(error => {
-                    this.responseOutput.textContent = 'Error: ' + error;
+                    .then(response => response.json())
+                    .then(data => {
+                        this.responseOutput.textContent = JSON.stringify(data, null, 2);
+                    })
+                    .catch(error => {
+                        this.responseOutput.textContent = 'Error: ' + error;
                 });
+                
+            } else if (/^(INSERT)/i.test(query)) {
+                fetch(`${apiRoute}/sql`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ query : query })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        this.responseOutput.textContent = JSON.stringify(data, null, 2);
+                    })
+                    .catch(error => {
+                        this.responseOutput.textContent = 'Error: ' + error;
+                });
+            } else {
+                this.responseOutput.textContent = 'Only INSERT and SELECT queries are allowed.';
+            }
         });
     }
 }
