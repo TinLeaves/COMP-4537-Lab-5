@@ -23,6 +23,7 @@ class API {
             return;
         }
 
+        //From https://stackoverflow.com/questions/31006711/get-request-body-from-node-jss-http-incomingmessage
         let body = "";
         req.on("data", (chunk) => {
             body += chunk.toString();
