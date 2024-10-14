@@ -31,7 +31,9 @@ class UserInterface {
             const query = this.queryInput.value;
 
             if (/^(SELECT)/i.test(query)) {
-                fetch(`${apiRoute}/sql?query=${encodeURI(query)}`, {
+                let url = new URL(`${apiRoute}/sql`);
+                url.searchParams.append('query', query);
+                fetch(url.href, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
