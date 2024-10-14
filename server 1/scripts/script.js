@@ -1,5 +1,7 @@
 // Created in part with GitHub Copilot
 
+const apiRoute = 'https://comp-4537-lab-5-production.up.railway.app/';
+
 const insertButton = document.getElementById('insertButton');
 const queryInput = document.getElementById('queryInput');
 const executeQueryButton = document.getElementById('executeQueryButton');
@@ -15,7 +17,7 @@ class UserInterface {
 
     addListerners() {
         this.insertButton.addEventListener('click', () => {
-            fetch('/insertTestRows', { method: 'POST' })
+            fetch(`${apiRoute}/insertTestRows`, { method: 'POST' })
                 .then(response => response.text())
                 .then(data => {
                     this.responseOutput.textContent = data;
