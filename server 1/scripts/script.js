@@ -1,6 +1,6 @@
 // Created in part with GitHub Copilot
 
-const apiRoute = 'https://comp-4537-lab-5-production.up.railway.app/';
+const apiRoute = 'https://comp-4537-lab-5-production.up.railway.app';
 
 const insertButton = document.getElementById('insertButton');
 const queryInput = document.getElementById('queryInput');
@@ -29,8 +29,14 @@ class UserInterface {
 
         this.executeQueryButton.addEventListener('click', () => {
             const query = this.queryInput.value;
-            fetch('/sql', {
-                method: 'POST',
+
+            let method = 'POST';
+            if (/^(SELECT)/i.test(query)) {
+                method = 'GET';
+            }
+
+            fetch(`${apiRoute}/sql`, {
+                method: method,
                 headers: {
                     'Content-Type': 'application/json'
                 },
