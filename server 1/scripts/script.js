@@ -18,7 +18,7 @@ class UserInterface {
 
     addListeners() {
         this.insertButton.addEventListener('click', () => {
-            fetch(`${apiRoute}?insertTestRows`, { method: 'POST' }) 
+            fetch(`${apiRoute}/insertTestRows`, { method: 'POST' }) 
                 .then(response => response.text())
                 .then(data => {
                     this.responseOutput.textContent = data;
