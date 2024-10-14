@@ -59,10 +59,10 @@ class API {
                     }
                 }
             } else if (req.method === "GET") {
-                let query = req.url.split("/")[2];
-                query = decodeURI(query);
+                let url = new URL(req.url);
+                let query = url.searchParams.get("query");
 
-                if (req.url.split("/")[1] === "/sql") {
+                if (url.pathname === "/sql") {
                     console.log("Handling GET request for /sql");
                     try {
                         if (/^(SELECT)/i.test(query)) {

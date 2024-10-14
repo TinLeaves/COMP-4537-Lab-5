@@ -17,7 +17,7 @@ class UserInterface {
 
     addListerners() {
         this.insertButton.addEventListener('click', () => {
-            fetch(`${apiRoute}/insertTestRows`, { method: 'POST' })
+            fetch(`${apiRoute}?insertTestRows`, { method: 'POST' })
                 .then(response => response.text())
                 .then(data => {
                     this.responseOutput.textContent = data;
@@ -31,7 +31,7 @@ class UserInterface {
             const query = this.queryInput.value;
 
             if (/^(SELECT)/i.test(query)) {
-                fetch(`${apiRoute}/sql/${encodeURI(query)}`, {
+                fetch(`${apiRoute}/sql?query=${encodeURI(query)}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
