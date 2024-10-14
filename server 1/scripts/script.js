@@ -1,6 +1,7 @@
-// Created in part with GitHub Copilot
+// Created in part with GitHub Copilot and ChatGPT
 
-const apiRoute = 'https://comp-4537-lab-5.onrender.com';
+// const apiRoute = 'https://comp-4537-lab-5.onrender.com';
+const apiRoute = 'comp-4537-lab-5-production.up.railway.app';
 
 const insertButton = document.getElementById('insertButton');
 const queryInput = document.getElementById('queryInput');
@@ -15,9 +16,9 @@ class UserInterface {
         this.responseOutput = document.getElementById('responseOutput');
     }
 
-    addListerners() {
+    addListeners() {
         this.insertButton.addEventListener('click', () => {
-            fetch(`${apiRoute}?insertTestRows`, { method: 'POST' })
+            fetch(`${apiRoute}/insertTestRows`, { method: 'POST' }) 
                 .then(response => response.text())
                 .then(data => {
                     this.responseOutput.textContent = data;
@@ -53,7 +54,7 @@ class UserInterface {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ query : query })
+                    body: JSON.stringify({ query: query })
                 })
                     .then(response => response.json())
                     .then(data => {
