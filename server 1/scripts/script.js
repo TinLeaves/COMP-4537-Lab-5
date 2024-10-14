@@ -1,7 +1,7 @@
 // Created in part with GitHub Copilot and ChatGPT
 
 // const apiRoute = 'https://comp-4537-lab-5.onrender.com';
-const apiRoute = 'comp-4537-lab-5-production.up.railway.app';
+const apiRoute = 'https://comp-4537-lab-5-production.up.railway.app';
 
 const insertButton = document.getElementById('insertButton');
 const queryInput = document.getElementById('queryInput');
