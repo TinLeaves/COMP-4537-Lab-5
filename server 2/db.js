@@ -13,6 +13,8 @@ class Database {
       }
     });
 
+    console.log(process.env.DB_HOST);
+
     // this.connect();
     this.createTable().catch(err => console.error(err)); // Catch errors during table creation
   }
