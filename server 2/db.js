@@ -1,5 +1,3 @@
-// Created in part with GitHub Copilot
-
 const mysql = require("mysql2/promise");
 require('dotenv').config();
 
@@ -12,18 +10,11 @@ class Database {
       database: process.env.DB_NAME,
     });
 
-    //this.connect();
-    this.createTable();
+    // this.connect();
+    this.createTable().catch(err => console.error(err)); // Catch errors during table creation
   }
 
-  connect() {
-    this.db.connect((err) => {
-      if (err) throw err;
-      console.log('Connected to the database');
-    });
-  }
-
-  createTable() {
+  async createTable() {
     const createTableQuery = `
       CREATE TABLE IF NOT EXISTS patient (
         patientid INT AUTO_INCREMENT PRIMARY KEY,
@@ -32,25 +23,27 @@ class Database {
       ) ENGINE=InnoDB;
     `;
 
-    this.db.execute(createTableQuery).then((err) => {
-      if (err) throw err;
+    try {
+      await this.db.execute(createTableQuery);
       console.log('Patient table is ready');
-    });
+    } catch (err) {
+      console.error('Error creating table:', err);
+      throw err; 
+    }
   }
 
-  checkTableExists() {
-    const query = `select 1 from patient LIMIT 1`;
+  async checkTableExists() {
+    const query = `SELECT 1 FROM patient LIMIT 1`;
 
-    this.db.execute(query).then((err) => {
-      if (err) {
-        return false;
-      } else {
-        return true;
-      }
-    });
+    try {
+      await this.db.execute(query);
+      return true; 
+    } catch (err) {
+      return false; 
+    }
   }
 
-  insertTestRows(res) {
+  async insertTestRows(res) {
     const rows = [
       ["Sara Brown", "1990-01-01"],
       ["John Smith", "1941-01-01"],
@@ -60,17 +53,14 @@ class Database {
 
     const query = `INSERT INTO patient (name, dateOfBirth) VALUES (?, ?)`;
 
-    rows.forEach((row) => {
-      this.db.execute(query, row).then((err) => {
-        if (err) {
-            res.writeHead(500);
-            res.end('Error inserting rows.');
-        } else {
-            res.writeHead(200);
-            res.end('Rows inserted successfully.');
-        }
-      });
-    });
+    try {
+      await Promise.all(rows.map(row => this.db.execute(query, row)));
+      res.writeHead(200);
+      res.end('Rows inserted successfully.');
+    } catch (err) {
+      res.writeHead(500);
+      res.end('Error inserting rows: ' + err.message);
+    }
   }
 }
 
