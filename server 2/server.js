@@ -61,18 +61,23 @@ class API {
             } else if (req.method === "GET") {
                 if (req.url === "/sql") {
                     console.log("Handling GET request for /sql");
-                    const query = JSON.parse(body).query;
-                    if (/^(SELECT)/i.test(query)) {
-                        database.db.execute(query).then((results) => {
-                            res.writeHead(200, { "Content-Type": "application/json" });
-                            res.end(JSON.stringify(results));
-                        }).catch((err) => {
-                            res.writeHead(500, { "Content-Type": "application/json" });
-                            res.end(JSON.stringify({ error: err.message }));
-                        });
-                    } else {
+                    try {
+                        const query = JSON.parse(body).query;
+                        if (/^(SELECT)/i.test(query)) {
+                            database.db.execute(query).then((results) => {
+                                res.writeHead(200, { "Content-Type": "application/json" });
+                                res.end(JSON.stringify(results));
+                            }).catch((err) => {
+                                res.writeHead(500, { "Content-Type": "application/json" });
+                                res.end(JSON.stringify({ error: err.message }));
+                            });
+                        } else {
+                            res.writeHead(400, { "Content-Type": "application/json" });
+                            res.end(JSON.stringify({ error: "Only SELECT queries are allowed in GET requests." }));
+                        }
+                    } catch (error) {
                         res.writeHead(400, { "Content-Type": "application/json" });
-                        res.end(JSON.stringify({ error: "Only SELECT queries are allowed in GET requests." }));
+                        res.end(JSON.stringify({ error: "Invalid JSON format." }));
                     }
                 } else {
                     res.writeHead(404, { "Content-Type": "application/json" });
