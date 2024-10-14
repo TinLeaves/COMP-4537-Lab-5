@@ -18,23 +18,23 @@ class API {
 
     handleRequest(req, res) {
         this.setCorsHeaders(res);
-
+    
         if (req.method === "OPTIONS") {
             res.writeHead(204);
             res.end();
             return;
         }
-
+    
+        let body = "";
+        req.on("data", (chunk) => {
+            body += chunk.toString();
+        });
+    
         req.on("end", () => {
             console.log(`Received ${req.method} request for ${req.url}`);
-            
+    
             if (req.method === "POST") {
-                //From https://stackoverflow.com/questions/31006711/get-request-body-from-node-jss-http-incomingmessage
-                let body = "";
-                req.on("data", (chunk) => {
-                    body += chunk.toString();
-                });
-
+                 //From https://stackoverflow.com/questions/31006711/get-request-body-from-node-jss-http-incomingmessage
                 if (req.url === "/insertTestRows") {
                     console.log("Inserting test rows...");
                     database.insertTestRows(res);
@@ -42,13 +42,15 @@ class API {
                     try {
                         const query = JSON.parse(body).query;
                         if (/^(INSERT)/i.test(query)) {
-                            database.db.execute(query).then((results) => {
-                                res.writeHead(200, { "Content-Type": "application/json" });
-                                res.end(JSON.stringify(results));
-                            }).catch((err) => {
-                                res.writeHead(500, { "Content-Type": "application/json" });
-                                res.end(JSON.stringify({ error: err.message }));
-                            });
+                            database.db.execute(query)
+                                .then((results) => {
+                                    res.writeHead(200, { "Content-Type": "application/json" });
+                                    res.end(JSON.stringify(results));
+                                })
+                                .catch((err) => {
+                                    res.writeHead(500, { "Content-Type": "application/json" });
+                                    res.end(JSON.stringify({ error: err.message }));
+                                });
                         } else {
                             res.writeHead(400, { "Content-Type": "application/json" });
                             res.end(JSON.stringify({ error: "Only INSERT queries are allowed in POST requests." }));
@@ -61,21 +63,23 @@ class API {
             } else if (req.method === "GET") {
                 let url = new URL(req.url, `http://${req.headers.host}`);
                 let query = url.searchParams.get("query");
-
+    
                 console.log(`Pathname: ${url.pathname}`);
                 console.log(`Received query: ${query}`);
-
+    
                 if (url.pathname === "/sql") {
                     console.log("Handling GET request for /sql");
                     try {
                         if (/^(SELECT)/i.test(query)) {
-                            database.db.execute(query).then((results) => {
-                                res.writeHead(200, { "Content-Type": "application/json" });
-                                res.end(JSON.stringify(results));
-                            }).catch((err) => {
-                                res.writeHead(500, { "Content-Type": "application/json" });
-                                res.end(JSON.stringify({ error: err.message }));
-                            });
+                            database.db.execute(query)
+                                .then((results) => {
+                                    res.writeHead(200, { "Content-Type": "application/json" });
+                                    res.end(JSON.stringify(results));
+                                })
+                                .catch((err) => {
+                                    res.writeHead(500, { "Content-Type": "application/json" });
+                                    res.end(JSON.stringify({ error: err.message }));
+                                });
                         } else {
                             res.writeHead(400, { "Content-Type": "application/json" });
                             res.end(JSON.stringify({ error: "Only SELECT queries are allowed in GET requests." }));
@@ -93,7 +97,7 @@ class API {
                 res.end(JSON.stringify({ error: "Method Not Allowed" }));
             }
         });
-    }
+    }    
 
     listen(port = 8080) {
         console.log(`Server is running on port ${port}`);
