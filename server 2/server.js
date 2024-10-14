@@ -81,7 +81,7 @@ class API {
         console.log(`Server is running on port ${port}`);
 
         http.createServer((req, res) => {
-            this.handelRequest(req, res);
+            this.handleRequest(req, res);
         }).listen(port);
     }
 }
