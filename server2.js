@@ -9,15 +9,15 @@ class API {
     }
 
     handelRequest(req, res) {
+        let body = "";
+        req.on("data", (chunk) => {
+            body += chunk.toString();
+        });
+
         if (req.method == "POST") {
             if (req.url === "/insertTestRows") {
                 database.insertTestRows(res);
             } else if (req.url === "/sql") {
-                let body = "";
-                req.on("data", (chunk) => {
-                    body += chunk.toString();
-                });
-
                 req.on("end", () => {
                     const query = JSON.parse(body).query;
                     if (/^(INSERT)/i.test(query)) {
@@ -38,11 +38,6 @@ class API {
             }
         } else if (req.method === "GET") {
             if (req.url === "/sql") {
-                let body = "";
-                req.on("data", (chunk) => {
-                    body += chunk.toString();
-                });
-
                 req.on("end", () => {
                     const query = JSON.parse(body).query;
                     if (/^(SELECT)/i.test(query)) {
