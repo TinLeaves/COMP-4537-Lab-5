@@ -62,7 +62,7 @@ class API {
                 let url = new URL(req.url);
                 let query = url.searchParams.get("query");
 
-                if (url.pathname === "/sql") {
+                if (url.parse(req.url).pathname === "/sql") {
                     console.log("Handling GET request for /sql");
                     try {
                         if (/^(SELECT)/i.test(query)) {
@@ -79,7 +79,7 @@ class API {
                         }
                     } catch (error) {
                         res.writeHead(400, { "Content-Type": "application/json" });
-                        res.end(JSON.stringify({ error: "Invalid JSON format." }));
+                        res.end(JSON.stringify({ error: "Invalid Search Parameter format." }));
                     }
                 } else {
                     res.writeHead(404, { "Content-Type": "application/json" });
