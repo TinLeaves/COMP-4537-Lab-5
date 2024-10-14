@@ -24,7 +24,8 @@ class API {
             res.end();
             return;
         }
-    
+        
+        //From https://stackoverflow.com/questions/31006711/get-request-body-from-node-jss-http-incomingmessage
         let body = "";
         req.on("data", (chunk) => {
             body += chunk.toString();
@@ -34,7 +35,6 @@ class API {
             console.log(`Received ${req.method} request for ${req.url}`);
     
             if (req.method === "POST") {
-                 //From https://stackoverflow.com/questions/31006711/get-request-body-from-node-jss-http-incomingmessage
                 if (req.url === "/insertTestRows") {
                     console.log("Inserting test rows...");
                     database.insertTestRows(res);
